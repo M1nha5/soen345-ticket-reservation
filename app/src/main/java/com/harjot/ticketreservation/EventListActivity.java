@@ -100,7 +100,13 @@ public class EventListActivity extends AppCompatActivity {
                         Toast.makeText(this, "Enter ticket quantity", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    int tickets = Integer.parseInt(value);
+                    int tickets;
+                    try {
+                        tickets = Integer.parseInt(value);
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(this, "Invalid ticket quantity", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     if (!reservationPolicyService.canReserve(item, tickets)) {
                         Toast.makeText(this, "Invalid ticket quantity", Toast.LENGTH_SHORT).show();
                         return;

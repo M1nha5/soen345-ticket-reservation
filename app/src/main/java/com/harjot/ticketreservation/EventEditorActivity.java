@@ -73,7 +73,17 @@ public class EventEditorActivity extends AppCompatActivity {
             return;
         }
 
-        int totalTickets = Integer.parseInt(ticketsText);
+        int totalTickets;
+        try {
+            totalTickets = Integer.parseInt(ticketsText);
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Invalid ticket count", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (totalTickets <= 0) {
+            Toast.makeText(this, "Ticket count must be greater than zero", Toast.LENGTH_SHORT).show();
+            return;
+        }
         long dateTime;
         try {
             dateTime = DateUtils.toEpochMillis(date, time);
@@ -83,7 +93,10 @@ public class EventEditorActivity extends AppCompatActivity {
         }
 
         String id = getIntent().getStringExtra("eventId");
-        int availableTickets = getIntent().getIntExtra("availableTickets", totalTickets);
+        int previousTotalTickets = getIntent().getIntExtra("totalTickets", totalTickets);
+        int previousAvailableTickets = getIntent().getIntExtra("availableTickets", totalTickets);
+        int soldTickets = Math.max(0, previousTotalTickets - previousAvailableTickets);
+        int availableTickets = Math.max(0, totalTickets - soldTickets);
         String status = getIntent().getStringExtra("status");
         String organizerId = dataSource.getCurrentUid();
         EventItem event = new EventItem(
