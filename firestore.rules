@@ -63,6 +63,23 @@ service cloud.firestore {
                       && request.resource.data.totalTickets >= 0
                       && request.resource.data.availableTickets >= 0
                       && request.resource.data.availableTickets <= request.resource.data.totalTickets
+                    )
+                    || (
+                      signedIn()
+                      && resource.data.status == 'active'
+                      && request.resource.data.status == resource.data.status
+                      && request.resource.data.id == resource.data.id
+                      && request.resource.data.title == resource.data.title
+                      && request.resource.data.category == resource.data.category
+                      && request.resource.data.location == resource.data.location
+                      && request.resource.data.dateTimeMillis == resource.data.dateTimeMillis
+                      && request.resource.data.totalTickets == resource.data.totalTickets
+                      && request.resource.data.organizerId == resource.data.organizerId
+                      && request.resource.data.createdAt == resource.data.createdAt
+                      && request.resource.data.availableTickets is int
+                      && request.resource.data.availableTickets >= 0
+                      && request.resource.data.availableTickets <= request.resource.data.totalTickets
+                      && request.resource.data.diff(resource.data).changedKeys().hasOnly(['availableTickets'])
                     );
       allow delete: if isAdmin();
     }

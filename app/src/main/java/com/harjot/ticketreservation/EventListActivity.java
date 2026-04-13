@@ -1,10 +1,10 @@
 package com.harjot.ticketreservation;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -94,24 +94,16 @@ public class EventListActivity extends AppCompatActivity {
     }
 
     private void showReserveDialog(EventItem item) {
-        EditText input = new EditText(this);
-        input.setHint("Tickets");
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_reserve_tickets, null);
+        NumberPicker numberPicker = dialogView.findViewById(R.id.npTickets);
+        numberPicker.setMinValue(1);
+        numberPicker.setMaxValue(Math.max(1, item.getAvailableTickets()));
+        numberPicker.setWrapSelectorWheel(false);
         new AlertDialog.Builder(this)
                 .setTitle("Reserve Tickets")
-                .setView(input)
+                .setView(dialogView)
                 .setPositiveButton("Reserve", (dialog, which) -> {
-                    String value = input.getText().toString().trim();
-                    if (TextUtils.isEmpty(value)) {
-                        Toast.makeText(this, "Enter ticket quantity", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    int tickets;
-                    try {
-                        tickets = Integer.parseInt(value);
-                    } catch (NumberFormatException e) {
-                        Toast.makeText(this, "Invalid ticket quantity", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
+                    int tickets = numberPicker.getValue();
                     if (!reservationPolicyService.canReserve(item, tickets)) {
                         Toast.makeText(this, "Invalid ticket quantity", Toast.LENGTH_SHORT).show();
                         return;
