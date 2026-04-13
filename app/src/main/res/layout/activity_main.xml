@@ -51,6 +51,18 @@
             android:textColor="@color/text_secondary"
             android:textSize="14sp" />
 
+        <TextView
+            android:id="@+id/tvOrganizerNotice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_chip_neutral"
+            android:padding="10dp"
+            android:text="Once your account is approved, you will be able to create events."
+            android:textColor="@color/brand_primary_dark"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnBrowseEvents"
             android:layout_width="match_parent"

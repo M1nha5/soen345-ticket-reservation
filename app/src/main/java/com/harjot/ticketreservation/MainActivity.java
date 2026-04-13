@@ -14,6 +14,7 @@ import com.harjot.ticketreservation.model.UserProfile;
 import com.harjot.ticketreservation.service.DataCallback;
 import com.harjot.ticketreservation.service.FirebaseDataSource;
 import com.harjot.ticketreservation.service.RolePolicyService;
+import com.harjot.ticketreservation.util.AppConstants;
 
 public class MainActivity extends AppCompatActivity {
     private static final String ADMIN_EMAIL = "harjot.wic@gmail.com";
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnManageEvents;
     private Button btnApprovals;
     private Button btnLogout;
+    private TextView tvOrganizerNotice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         btnManageEvents = findViewById(R.id.btnManageEvents);
         btnApprovals = findViewById(R.id.btnApprovals);
         btnLogout = findViewById(R.id.btnLogout);
+        tvOrganizerNotice = findViewById(R.id.tvOrganizerNotice);
 
         btnBrowseEvents.setOnClickListener(v -> startActivity(new Intent(this, EventListActivity.class)));
         btnReservations.setOnClickListener(v -> startActivity(new Intent(this, ReservationListActivity.class)));
@@ -88,6 +91,9 @@ public class MainActivity extends AppCompatActivity {
                 boolean canApprove = rolePolicyService.canApproveOrganizers(profile);
                 btnManageEvents.setVisibility(canManageEvents ? View.VISIBLE : View.GONE);
                 btnApprovals.setVisibility(canApprove ? View.VISIBLE : View.GONE);
+                boolean showOrganizerNotice = AppConstants.ROLE_ORGANIZER.equals(profile.getRole())
+                        && !AppConstants.STATUS_APPROVED.equals(profile.getStatus());
+                tvOrganizerNotice.setVisibility(showOrganizerNotice ? View.VISIBLE : View.GONE);
             }
 
             @Override
