@@ -2,7 +2,9 @@ package com.harjot.ticketreservation;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,6 +27,7 @@ public class ManageEventsActivity extends AppCompatActivity {
     private RolePolicyService rolePolicyService;
     private ManageEventAdapter adapter;
     private UserProfile profile;
+    private TextView tvEmptyManageEvents;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +35,7 @@ public class ManageEventsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_manage_events);
         dataSource = new FirebaseDataSource();
         rolePolicyService = new RolePolicyService();
+        tvEmptyManageEvents = findViewById(R.id.tvEmptyManageEvents);
         Button btnAddEvent = findViewById(R.id.btnAddEvent);
         RecyclerView recyclerView = findViewById(R.id.rvManageEvents);
 
@@ -101,6 +105,7 @@ public class ManageEventsActivity extends AppCompatActivity {
             @Override
             public void onSuccess(List<EventItem> items) {
                 adapter.setItems(items);
+                tvEmptyManageEvents.setVisibility(items.isEmpty() ? View.VISIBLE : View.GONE);
             }
 
             @Override

@@ -1,7 +1,12 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.TicketReservationApp" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+<resources>
+    <style name="Base.Theme.TicketReservationApp" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">#8EC3F9</item>
+        <item name="colorOnPrimary">#002C4D</item>
+        <item name="colorPrimaryContainer">#0F4C81</item>
+        <item name="colorOnPrimaryContainer">#D4E9FF</item>
+        <item name="colorSecondary">#F3B233</item>
+        <item name="colorOnSecondary">#1F1600</item>
+        <item name="colorSurface">#0E1116</item>
+        <item name="android:windowBackground">#0E1116</item>
     </style>
 </resources>

@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.harjot.ticketreservation.R;
 import com.harjot.ticketreservation.model.EventItem;
 import com.harjot.ticketreservation.util.DateUtils;
+import com.harjot.ticketreservation.util.EventImageResolver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,10 +46,11 @@ public class EventBrowseAdapter extends RecyclerView.Adapter<EventBrowseAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         EventItem item = items.get(position);
+        holder.image.setImageResource(EventImageResolver.resolveByCategory(item.getCategory()));
         holder.title.setText(item.getTitle());
-        holder.subtitle.setText(item.getCategory() + " | " + item.getLocation());
+        holder.subtitle.setText(item.getCategory() + " • " + item.getLocation());
         holder.datetime.setText(DateUtils.dateTime(item.getDateTimeMillis()));
-        holder.availability.setText("Available: " + item.getAvailableTickets());
+        holder.availability.setText("Available Seats: " + item.getAvailableTickets());
         holder.reserveButton.setOnClickListener(v -> listener.onReserve(item));
         holder.reserveButton.setEnabled(item.getAvailableTickets() > 0);
     }
@@ -58,6 +61,7 @@ public class EventBrowseAdapter extends RecyclerView.Adapter<EventBrowseAdapter.
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
+        ImageView image;
         TextView title;
         TextView subtitle;
         TextView datetime;
@@ -66,6 +70,7 @@ public class EventBrowseAdapter extends RecyclerView.Adapter<EventBrowseAdapter.
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
+            image = itemView.findViewById(R.id.ivEventImage);
             title = itemView.findViewById(R.id.tvEventTitle);
             subtitle = itemView.findViewById(R.id.tvEventSubtitle);
             datetime = itemView.findViewById(R.id.tvEventDateTime);

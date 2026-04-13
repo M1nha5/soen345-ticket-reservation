@@ -1,6 +1,8 @@
 package com.harjot.ticketreservation;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,12 +20,14 @@ import java.util.List;
 public class ReservationListActivity extends AppCompatActivity {
     private FirebaseDataSource dataSource;
     private ReservationAdapter adapter;
+    private TextView tvEmptyReservations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reservation_list);
         dataSource = new FirebaseDataSource();
+        tvEmptyReservations = findViewById(R.id.tvEmptyReservations);
         RecyclerView recyclerView = findViewById(R.id.rvReservations);
         adapter = new ReservationAdapter(item -> dataSource.cancelReservation(item, new SimpleCallback() {
             @Override
@@ -57,6 +61,7 @@ public class ReservationListActivity extends AppCompatActivity {
             @Override
             public void onSuccess(List<ReservationItem> items) {
                 adapter.setItems(items);
+                tvEmptyReservations.setVisibility(items.isEmpty() ? View.VISIBLE : View.GONE);
             }
 
             @Override

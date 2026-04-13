@@ -1,6 +1,8 @@
 package com.harjot.ticketreservation;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +24,7 @@ public class OrganizerApprovalActivity extends AppCompatActivity {
     private FirebaseDataSource dataSource;
     private RolePolicyService rolePolicyService;
     private OrganizerApprovalAdapter adapter;
+    private TextView tvEmptyApprovals;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +32,7 @@ public class OrganizerApprovalActivity extends AppCompatActivity {
         setContentView(R.layout.activity_organizer_approval);
         dataSource = new FirebaseDataSource();
         rolePolicyService = new RolePolicyService();
+        tvEmptyApprovals = findViewById(R.id.tvEmptyApprovals);
 
         RecyclerView recyclerView = findViewById(R.id.rvOrganizerApprovals);
         adapter = new OrganizerApprovalAdapter(new OrganizerApprovalAdapter.Listener() {
@@ -73,6 +77,7 @@ public class OrganizerApprovalActivity extends AppCompatActivity {
             @Override
             public void onSuccess(List<UserProfile> items) {
                 adapter.setItems(items);
+                tvEmptyApprovals.setVisibility(items.isEmpty() ? View.VISIBLE : View.GONE);
             }
 
             @Override

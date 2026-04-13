@@ -2,8 +2,10 @@ package com.harjot.ticketreservation;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -32,6 +34,7 @@ public class EventListActivity extends AppCompatActivity {
     private EditText etDate;
     private EditText etLocation;
     private EditText etCategory;
+    private TextView tvEmptyEvents;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +49,7 @@ public class EventListActivity extends AppCompatActivity {
         etDate = findViewById(R.id.etDate);
         etLocation = findViewById(R.id.etLocation);
         etCategory = findViewById(R.id.etCategory);
+        tvEmptyEvents = findViewById(R.id.tvEmptyEvents);
         Button btnApplyFilter = findViewById(R.id.btnApplyFilter);
         RecyclerView recyclerView = findViewById(R.id.rvEvents);
 
@@ -86,6 +90,7 @@ public class EventListActivity extends AppCompatActivity {
                 etCategory.getText().toString()
         );
         adapter.setItems(filtered);
+        tvEmptyEvents.setVisibility(filtered.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
     private void showReserveDialog(EventItem item) {

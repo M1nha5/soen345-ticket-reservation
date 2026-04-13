@@ -1,5 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="black">#0C111D</color>
+    <color name="white">#FFFFFF</color>
+    <color name="brand_primary">#0F4C81</color>
+    <color name="brand_primary_dark">#0B3659</color>
+    <color name="brand_secondary">#F3B233</color>
+    <color name="surface_base">#F6F8FC</color>
+    <color name="surface_card">#FFFFFF</color>
+    <color name="text_primary">#101828</color>
+    <color name="text_secondary">#475467</color>
+    <color name="status_success">#1D9B5D</color>
+    <color name="status_warning">#B54708</color>
+    <color name="status_danger">#B42318</color>
 </resources>

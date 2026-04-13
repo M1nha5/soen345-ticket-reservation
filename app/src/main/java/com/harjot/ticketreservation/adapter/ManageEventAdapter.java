@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.harjot.ticketreservation.R;
 import com.harjot.ticketreservation.model.EventItem;
 import com.harjot.ticketreservation.util.DateUtils;
+import com.harjot.ticketreservation.util.EventImageResolver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,10 +47,12 @@ public class ManageEventAdapter extends RecyclerView.Adapter<ManageEventAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         EventItem item = items.get(position);
+        holder.image.setImageResource(EventImageResolver.resolveByCategory(item.getCategory()));
         holder.title.setText(item.getTitle());
-        holder.subtitle.setText(item.getCategory() + " | " + item.getLocation());
+        holder.subtitle.setText(item.getCategory() + " • " + item.getLocation());
         holder.datetime.setText(DateUtils.dateTime(item.getDateTimeMillis()));
-        holder.status.setText("Status: " + item.getStatus() + " | Available: " + item.getAvailableTickets());
+        String statusLabel = "active".equals(item.getStatus()) ? "Active" : "Cancelled";
+        holder.status.setText(statusLabel + " • Available: " + item.getAvailableTickets());
         holder.editButton.setOnClickListener(v -> listener.onEdit(item));
         holder.cancelButton.setOnClickListener(v -> listener.onCancel(item));
         holder.cancelButton.setEnabled(!"cancelled".equals(item.getStatus()));
@@ -60,6 +64,7 @@ public class ManageEventAdapter extends RecyclerView.Adapter<ManageEventAdapter.
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
+        ImageView image;
         TextView title;
         TextView subtitle;
         TextView datetime;
@@ -69,6 +74,7 @@ public class ManageEventAdapter extends RecyclerView.Adapter<ManageEventAdapter.
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
+            image = itemView.findViewById(R.id.ivManageEventImage);
             title = itemView.findViewById(R.id.tvManageEventTitle);
             subtitle = itemView.findViewById(R.id.tvManageEventSubtitle);
             datetime = itemView.findViewById(R.id.tvManageEventDateTime);

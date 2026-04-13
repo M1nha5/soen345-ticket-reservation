@@ -3,19 +3,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="12dp">
+    android:background="@color/surface_base"
+    android:padding="14dp">
 
-    <Button
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/section_manage_events"
+        android:textColor="@color/text_primary"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnAddEvent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:text="@string/action_add_event" />
+
+    <TextView
+        android:id="@+id/tvEmptyManageEvents"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="@string/empty_manage_events"
+        android:textColor="@color/text_secondary"
+        android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvManageEvents"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:layout_marginTop="8dp" />
 
 </LinearLayout>

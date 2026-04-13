@@ -18,12 +18,15 @@
     <string name="action_manage_approvals">Organizer Approvals</string>
     <string name="action_logout">Logout</string>
     <string name="action_add_event">Add Event</string>
-    <string name="action_save">Save</string>
+    <string name="action_save">Save Event</string>
     <string name="action_cancel_reservation">Cancel Reservation</string>
     <string name="action_cancel_event">Cancel Event</string>
     <string name="action_edit_event">Edit Event</string>
     <string name="action_approve">Approve</string>
     <string name="action_reject">Reject</string>
+    <string name="action_apply_filters">Apply Filters</string>
+    <string name="action_explore_events">Explore Events</string>
+    <string name="action_open_events">Open Events</string>
     <string name="hint_search">Search title</string>
     <string name="hint_filter_date">Date (yyyy-mm-dd)</string>
     <string name="hint_filter_location">Location</string>
@@ -35,4 +38,19 @@
     <string name="label_event_time">Time (HH:mm)</string>
     <string name="label_total_tickets">Total Tickets</string>
     <string name="label_tickets">Tickets</string>
+    <string name="hero_title_main">Plan Exceptional Events</string>
+    <string name="hero_subtitle_main">Manage bookings, approvals, and live confirmations in one place.</string>
+    <string name="hero_title_auth">Welcome Back</string>
+    <string name="hero_subtitle_auth">Sign in to continue your booking journey.</string>
+    <string name="section_filters">Find Your Perfect Event</string>
+    <string name="section_events">Available Events</string>
+    <string name="section_reservations">Your Reservations</string>
+    <string name="section_manage_events">Your Managed Events</string>
+    <string name="section_organizer_approvals">Pending Organizer Requests</string>
+    <string name="empty_events">No events are available yet. Check back soon for new listings.</string>
+    <string name="empty_reservations">You do not have any reservations yet.</string>
+    <string name="empty_manage_events">No events created yet. Add your first event to get started.</string>
+    <string name="empty_approvals">No organizer approvals are waiting right now.</string>
+    <string name="status_active">Active</string>
+    <string name="status_cancelled">Cancelled</string>
 </resources>

@@ -45,8 +45,9 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ReservationItem item = items.get(position);
         holder.title.setText(item.getEventTitle());
-        holder.subtitle.setText(item.getEventLocation() + " | " + DateUtils.dateTime(item.getEventDateTimeMillis()));
-        holder.status.setText("Status: " + item.getStatus() + " | Tickets: " + item.getTickets());
+        holder.subtitle.setText(item.getEventLocation() + " • " + DateUtils.dateTime(item.getEventDateTimeMillis()));
+        String statusLabel = "cancelled".equals(item.getStatus()) ? "Cancelled" : "Active";
+        holder.status.setText(statusLabel + " • Tickets: " + item.getTickets());
         holder.cancelButton.setEnabled(!"cancelled".equals(item.getStatus()));
         holder.cancelButton.setOnClickListener(v -> listener.onCancel(item));
     }
