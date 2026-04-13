@@ -3,6 +3,7 @@
 ## Execution Date
 
 - April 13, 2026
+- Final verification rerun: April 13, 2026 (evening)
 
 ## Scenario Matrix
 
@@ -30,3 +31,14 @@
 - Failed: 0
 - Errors: 0
 - Skipped: 0
+
+## Final Release Readiness Checks
+
+- Build validation rerun:
+  - `./gradlew testDebugUnitTest` -> Pass
+  - `./gradlew :app:assembleDebug` -> Pass
+- Firebase Android app SHAs now include both debug and release certificate fingerprints.
+- `google-services.json` refreshed from Firebase CLI after SHA registration.
+- Manual device check still required for final sign-off:
+  - Phone OTP auth on a physical Android device with Google Play Services.
+  - If device still shows "app not authorized", enable Play Integrity API in Google Cloud Console for project `soen345project-44582` and retry.
