@@ -33,7 +33,7 @@
                 android:id="@+id/etPhone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/label_phone"
+                android:hint="Phone (10 digits)"
                 android:inputType="phone" />
         </com.google.android.material.textfield.TextInputLayout>
 

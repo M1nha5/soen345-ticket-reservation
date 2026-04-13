@@ -3,6 +3,7 @@ package com.harjot.ticketreservation;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.telephony.PhoneNumberUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -11,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.FirebaseException;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
@@ -27,6 +27,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
     private EditText etPhone;
     private EditText etCode;
     private String verificationId;
+    private String normalizedPhone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,13 +44,19 @@ public class PhoneAuthActivity extends AppCompatActivity {
     }
 
     private void sendCode() {
-        String phone = etPhone.getText().toString().trim();
-        if (TextUtils.isEmpty(phone)) {
+        String rawPhone = etPhone.getText().toString().trim();
+        normalizedPhone = normalizeNorthAmericaPhone(rawPhone);
+        if (TextUtils.isEmpty(normalizedPhone)) {
             Toast.makeText(this, "Phone number required", Toast.LENGTH_SHORT).show();
             return;
         }
+        if (!PhoneNumberUtils.isGlobalPhoneNumber(normalizedPhone)) {
+            Toast.makeText(this, "Enter a valid phone number", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        etPhone.setText(normalizedPhone);
         PhoneAuthOptions options = PhoneAuthOptions.newBuilder(dataSource.getAuth())
-                .setPhoneNumber(phone)
+                .setPhoneNumber(normalizedPhone)
                 .setTimeout(60L, TimeUnit.SECONDS)
                 .setActivity(this)
                 .setCallbacks(callbacks)
@@ -75,7 +82,12 @@ public class PhoneAuthActivity extends AppCompatActivity {
 
         @Override
         public void onVerificationFailed(@NonNull FirebaseException e) {
-            Toast.makeText(PhoneAuthActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            String message = e.getMessage() == null ? "Phone verification failed" : e.getMessage();
+            String lower = message.toLowerCase();
+            if (lower.contains("not authorized") || lower.contains("configuration not found")) {
+                message = "Phone auth is not authorized yet. Reinstall the app, then confirm Play Integrity API is enabled in Firebase project settings.";
+            }
+            Toast.makeText(PhoneAuthActivity.this, message, Toast.LENGTH_LONG).show();
         }
 
         @Override
@@ -89,7 +101,10 @@ public class PhoneAuthActivity extends AppCompatActivity {
         dataSource.signInWithCredential(credential, new DataCallback<FirebaseUser>() {
             @Override
             public void onSuccess(FirebaseUser user) {
-                String phone = etPhone.getText().toString().trim();
+                String phone = normalizedPhone;
+                if (TextUtils.isEmpty(phone)) {
+                    phone = normalizeNorthAmericaPhone(etPhone.getText().toString().trim());
+                }
                 dataSource.upsertPhoneUser(user, phone, null, new DataCallback<UserProfile>() {
                     @Override
                     public void onSuccess(UserProfile data) {
@@ -113,5 +128,23 @@ public class PhoneAuthActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private String normalizeNorthAmericaPhone(String input) {
+        if (TextUtils.isEmpty(input)) {
+            return "";
+        }
+        String trimmed = input.trim();
+        if (trimmed.startsWith("+")) {
+            return "+" + trimmed.substring(1).replaceAll("[^0-9]", "");
+        }
+        String digits = trimmed.replaceAll("[^0-9]", "");
+        if (digits.length() == 10) {
+            return "+1" + digits;
+        }
+        if (digits.length() == 11 && digits.startsWith("1")) {
+            return "+" + digits;
+        }
+        return "+" + digits;
     }
 }

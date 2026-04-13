@@ -1,7 +1,6 @@
 const admin = require("firebase-admin");
 const functions = require("firebase-functions/v2/https");
 const nodemailer = require("nodemailer");
-const twilio = require("twilio");
 
 admin.initializeApp();
 
@@ -52,27 +51,14 @@ exports.sendConfirmation = functions.onCall(async (request) => {
 
   const message = `Reservation ${action}: ${reservation.eventTitle} (${reservation.tickets} tickets)`;
 
-  const sid = process.env.TWILIO_SID;
-  const token = process.env.TWILIO_AUTH_TOKEN;
-  const fromPhone = process.env.TWILIO_FROM_NUMBER;
   const gmailUser = process.env.GMAIL_USER;
   const gmailPass = process.env.GMAIL_APP_PASSWORD;
 
   let smsStatus = "skipped";
   let emailStatus = "skipped";
 
-  if (sid && token && fromPhone && user.phone) {
-    const twilioClient = twilio(sid, token);
-    try {
-      await twilioClient.messages.create({
-        body: message,
-        from: fromPhone,
-        to: user.phone
-      });
-      smsStatus = "sent";
-    } catch (e) {
-      smsStatus = "failed";
-    }
+  if (user.phone) {
+    smsStatus = "firebase_phone_auth_only";
   }
 
   if (gmailUser && gmailPass && user.email) {
