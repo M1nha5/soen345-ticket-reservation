@@ -5,6 +5,10 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    function isSelf(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
     function userDoc() {
       return get(/databases/$(database)/documents/users/$(request.auth.uid));
     }
@@ -18,22 +22,67 @@ service cloud.firestore {
     }
 
     match /users/{uid} {
-      allow create: if signedIn() && request.auth.uid == uid;
+      allow create: if isSelf(uid)
+                    && request.resource.data.uid == uid
+                    && request.resource.data.createdAt is int
+                    && (
+                      (request.resource.data.role == 'customer' && request.resource.data.status == 'approved')
+                      || (request.resource.data.role == 'organizer' && request.resource.data.status == 'pending')
+                    );
       allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
-      allow update: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow update: if isAdmin()
+                    || (
+                      isSelf(uid)
+                      && request.resource.data.uid == resource.data.uid
+                      && request.resource.data.role == resource.data.role
+                      && request.resource.data.status == resource.data.status
+                      && request.resource.data.createdAt == resource.data.createdAt
+                    );
       allow delete: if false;
     }
 
     match /events/{eventId} {
       allow read: if true;
-      allow create, update: if isAdmin() || isApprovedOrganizer();
+      allow create: if isAdmin()
+                    || (
+                      isApprovedOrganizer()
+                      && request.resource.data.organizerId == request.auth.uid
+                      && request.resource.data.totalTickets is int
+                      && request.resource.data.availableTickets is int
+                      && request.resource.data.totalTickets >= 0
+                      && request.resource.data.availableTickets >= 0
+                      && request.resource.data.availableTickets <= request.resource.data.totalTickets
+                    );
+      allow update: if isAdmin()
+                    || (
+                      isApprovedOrganizer()
+                      && resource.data.organizerId == request.auth.uid
+                      && request.resource.data.organizerId == resource.data.organizerId
+                      && request.resource.data.totalTickets is int
+                      && request.resource.data.availableTickets is int
+                      && request.resource.data.totalTickets >= 0
+                      && request.resource.data.availableTickets >= 0
+                      && request.resource.data.availableTickets <= request.resource.data.totalTickets
+                    );
       allow delete: if isAdmin();
     }
 
     match /reservations/{reservationId} {
       allow read: if signedIn() && (resource.data.userId == request.auth.uid || isAdmin());
-      allow create: if signedIn() && request.resource.data.userId == request.auth.uid;
-      allow update: if signedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if signedIn()
+                    && request.resource.data.userId == request.auth.uid
+                    && request.resource.data.status == 'active'
+                    && request.resource.data.tickets is int
+                    && request.resource.data.tickets > 0;
+      allow update: if isAdmin()
+                    || (
+                      signedIn()
+                      && resource.data.userId == request.auth.uid
+                      && request.resource.data.userId == resource.data.userId
+                      && request.resource.data.eventId == resource.data.eventId
+                      && request.resource.data.tickets == resource.data.tickets
+                      && request.resource.data.status == 'cancelled'
+                    );
       allow delete: if false;
     }
 

@@ -98,7 +98,10 @@ public class EventEditorActivity extends AppCompatActivity {
         int soldTickets = Math.max(0, previousTotalTickets - previousAvailableTickets);
         int availableTickets = Math.max(0, totalTickets - soldTickets);
         String status = getIntent().getStringExtra("status");
-        String organizerId = dataSource.getCurrentUid();
+        String organizerId = getIntent().getStringExtra("organizerId");
+        if (organizerId == null || organizerId.isEmpty()) {
+            organizerId = dataSource.getCurrentUid();
+        }
         EventItem event = new EventItem(
                 id,
                 title,

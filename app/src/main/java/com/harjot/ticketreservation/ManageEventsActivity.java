@@ -47,6 +47,7 @@ public class ManageEventsActivity extends AppCompatActivity {
                 intent.putExtra("totalTickets", item.getTotalTickets());
                 intent.putExtra("availableTickets", item.getAvailableTickets());
                 intent.putExtra("status", item.getStatus());
+                intent.putExtra("organizerId", item.getOrganizerId());
                 startActivity(intent);
             }
 

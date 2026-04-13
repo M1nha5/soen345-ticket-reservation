@@ -8,22 +8,45 @@ admin.initializeApp();
 const db = admin.firestore();
 
 exports.sendConfirmation = functions.onCall(async (request) => {
+  if (!request.auth || !request.auth.uid) {
+    throw new functions.HttpsError("unauthenticated", "Authentication required");
+  }
   const reservationId = request.data.reservationId;
   const action = request.data.action;
-  if (!reservationId || !action) {
-    throw new Error("Missing reservationId or action");
+  if (!reservationId || !action || (action !== "reserved" && action !== "cancelled")) {
+    throw new functions.HttpsError("invalid-argument", "Invalid reservation request");
   }
 
   const reservationRef = db.collection("reservations").doc(reservationId);
   const reservationSnap = await reservationRef.get();
   if (!reservationSnap.exists) {
-    throw new Error("Reservation not found");
+    throw new functions.HttpsError("not-found", "Reservation not found");
   }
 
   const reservation = reservationSnap.data();
+  const callerUid = request.auth.uid;
+  const callerUserSnap = await db.collection("users").doc(callerUid).get();
+  const callerRole = callerUserSnap.exists ? callerUserSnap.data().role : "";
+  if (callerUid !== reservation.userId && callerRole !== "admin") {
+    throw new functions.HttpsError("permission-denied", "Not allowed");
+  }
+
+  const existingConfirmation = await db.collection("confirmations")
+    .where("reservationId", "==", reservationId)
+    .where("action", "==", action)
+    .limit(1)
+    .get();
+  if (!existingConfirmation.empty) {
+    const existingData = existingConfirmation.docs[0].data();
+    return {
+      smsStatus: existingData.smsStatus || "skipped",
+      emailStatus: existingData.emailStatus || "skipped"
+    };
+  }
+
   const userSnap = await db.collection("users").doc(reservation.userId).get();
   if (!userSnap.exists) {
-    throw new Error("User not found");
+    throw new functions.HttpsError("not-found", "User not found");
   }
   const user = userSnap.data();
 
@@ -40,12 +63,16 @@ exports.sendConfirmation = functions.onCall(async (request) => {
 
   if (sid && token && fromPhone && user.phone) {
     const twilioClient = twilio(sid, token);
-    await twilioClient.messages.create({
-      body: message,
-      from: fromPhone,
-      to: user.phone
-    });
-    smsStatus = "sent";
+    try {
+      await twilioClient.messages.create({
+        body: message,
+        from: fromPhone,
+        to: user.phone
+      });
+      smsStatus = "sent";
+    } catch (e) {
+      smsStatus = "failed";
+    }
   }
 
   if (gmailUser && gmailPass && user.email) {
@@ -57,13 +84,17 @@ exports.sendConfirmation = functions.onCall(async (request) => {
       }
     });
 
-    await transporter.sendMail({
-      from: gmailUser,
-      to: user.email,
-      subject: "Ticket Reservation Confirmation",
-      text: message
-    });
-    emailStatus = "sent";
+    try {
+      await transporter.sendMail({
+        from: gmailUser,
+        to: user.email,
+        subject: "Ticket Reservation Confirmation",
+        text: message
+      });
+      emailStatus = "sent";
+    } catch (e) {
+      emailStatus = "failed";
+    }
   }
 
   await db.collection("confirmations").add({
