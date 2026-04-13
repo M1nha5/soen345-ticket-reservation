@@ -26,7 +26,6 @@ public class PhoneAuthActivity extends AppCompatActivity {
     private FirebaseDataSource dataSource;
     private EditText etPhone;
     private EditText etCode;
-    private EditText etName;
     private String verificationId;
 
     @Override
@@ -36,7 +35,6 @@ public class PhoneAuthActivity extends AppCompatActivity {
         dataSource = new FirebaseDataSource();
         etPhone = findViewById(R.id.etPhone);
         etCode = findViewById(R.id.etCode);
-        etName = findViewById(R.id.etName);
         Button btnSendCode = findViewById(R.id.btnSendCode);
         Button btnVerify = findViewById(R.id.btnVerifyCode);
 
@@ -91,9 +89,8 @@ public class PhoneAuthActivity extends AppCompatActivity {
         dataSource.signInWithCredential(credential, new DataCallback<FirebaseUser>() {
             @Override
             public void onSuccess(FirebaseUser user) {
-                String displayName = etName.getText().toString().trim();
                 String phone = etPhone.getText().toString().trim();
-                dataSource.upsertPhoneUser(user, phone, displayName, new DataCallback<UserProfile>() {
+                dataSource.upsertPhoneUser(user, phone, null, new DataCallback<UserProfile>() {
                     @Override
                     public void onSuccess(UserProfile data) {
                         startActivity(new Intent(PhoneAuthActivity.this, MainActivity.class));
