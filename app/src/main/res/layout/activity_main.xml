@@ -22,9 +22,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@drawable/bg_hero_main" />
+                android:src="@drawable/img_hero_dashboard" />
 
         </com.google.android.material.card.MaterialCardView>
+
+        <ImageView
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="-28dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/bg_card_soft"
+            android:padding="6dp"
+            android:src="@drawable/img_logo" />
 
         <TextView
             android:id="@+id/tvWelcome"

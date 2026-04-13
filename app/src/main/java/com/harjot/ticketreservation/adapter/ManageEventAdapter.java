@@ -47,7 +47,7 @@ public class ManageEventAdapter extends RecyclerView.Adapter<ManageEventAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         EventItem item = items.get(position);
-        holder.image.setImageResource(EventImageResolver.resolveByCategory(item.getCategory()));
+        holder.image.setImageResource(EventImageResolver.resolveByPosition(position));
         holder.title.setText(item.getTitle());
         holder.subtitle.setText(item.getCategory() + " • " + item.getLocation());
         holder.datetime.setText(DateUtils.dateTime(item.getDateTimeMillis()));
