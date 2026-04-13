@@ -8,11 +8,7 @@ if (file("google-services.json").exists()) {
 
 android {
     namespace = "com.harjot.ticketreservation"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.harjot.ticketreservation"
